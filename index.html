@@ -13,6 +13,7 @@
   --r-xs:6px;--r-sm:8px;--r-md:12px;--r-lg:16px;
   --sh-1:0 1px 2px rgba(3,95,98,.06),0 2px 8px rgba(3,95,98,.05);
   --sh-2:0 4px 14px rgba(3,95,98,.10),0 12px 32px rgba(3,95,98,.08);
+  --sh-3:0 10px 24px rgba(3,95,98,.22),0 22px 48px rgba(3,95,98,.18);
   --font-sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --font-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
@@ -30,72 +31,80 @@ html,body{height:100%;overflow:hidden;background:var(--canvas);color:var(--ink);
 .brand span i{font-style:normal;color:var(--ink-2);font-weight:400}
 .halves{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;min-height:0}
 .halves::before{content:"";position:absolute;left:50%;top:-6px;bottom:0;width:1px;background:linear-gradient(180deg,var(--line),var(--line) 85%,transparent)}
-.half{position:relative;display:flex;flex-direction:column;gap:clamp(14px,3vh,28px);padding:6px clamp(16px,2vw,36px) clamp(18px,4vh,38px);min-height:0;transition:opacity .45s}
+.half{position:relative;display:flex;align-items:center;justify-content:center;padding:0 clamp(16px,2vw,36px) 24px;min-height:0;transition:opacity .45s}
+.half-in{display:grid;gap:22px;width:min(100%,640px,calc((100vh - 330px) * 1.58))}
 .half--pipe::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,transparent,var(--teal-50) 92%)}
 .eyebrow{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep)}
 .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal)}
-.vis{position:relative;flex:1;min-height:0}
-.stage{position:absolute;left:50%;top:50%;transform-origin:center;width:600px;height:410px;transform:translate(-50%,-50%) scale(var(--s,1))}
+.vis{position:relative;aspect-ratio:600/380;width:100%}
+.stage{position:absolute;left:50%;top:50%;transform-origin:center;width:600px;height:380px;transform:translate(-50%,-50%) scale(var(--s,1))}
 /* hover on one side calms the other */
 body[data-hover="pipe"] .half--use{opacity:.5}
 body[data-hover="use"] .half--pipe{opacity:.5}
 
 /* ---- pipeline board ---- */
-.board{position:absolute;inset:0;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2)}
-.bd-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
-.bd-title{font-size:14px;font-weight:600}
+.card-s{position:absolute;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2)}
+.board{inset:0}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
+.ttl{font-size:14px;font-weight:600}
+.sub{font-size:12px;color:var(--ink-2)}
 .pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--teal-50);border:1px solid var(--teal-200);color:var(--teal-deep);font-size:12px;font-weight:600}
 .pill b{font-family:var(--font-mono);font-weight:600}
-.cols{position:absolute;left:16px;top:56px;display:flex;gap:8px}
-.col{width:104px;height:336px;border-radius:var(--r-md);background:var(--teal-50);border:1px solid var(--teal-200)}
-.col-h{display:flex;align-items:baseline;justify-content:space-between;padding:8px 9px 0;font-size:11px;font-weight:600;color:var(--ink-2)}
+.cols{position:absolute;left:16px;top:54px;display:flex;gap:8px}
+.col{width:104px;height:308px;border-radius:var(--r-md);background:var(--teal-50);border:1px solid var(--teal-200)}
+.col-h{display:flex;align-items:baseline;justify-content:space-between;padding:9px 10px 0;font-size:11px;font-weight:600;color:var(--ink-2)}
 .col-h b{font-family:var(--font-mono);font-weight:600;color:var(--teal-deep)}
-.deals{position:absolute;left:16px;top:56px;width:1px;height:1px}
-.deal{position:absolute;left:0;top:0;width:104px;height:56px;padding:8px 9px;border-radius:var(--r-sm);background:var(--canvas);border:1px solid var(--line);box-shadow:var(--sh-1)}
+.deals{position:absolute;left:16px;top:54px;width:1px;height:1px}
+.deal{position:absolute;left:0;top:0;width:104px;height:62px;padding:9px 10px;border-radius:var(--r-sm);background:var(--canvas);border:1px solid var(--line);box-shadow:var(--sh-1)}
 .deal-r{display:flex;align-items:center;gap:7px}
 .deal-i{width:20px;height:20px;border-radius:50%;background:var(--teal-50);border:1px solid var(--teal-200);color:var(--teal-deep);font-size:10px;font-weight:700;display:grid;place-items:center;flex:none}
-.deal-n{font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.deal-v{margin-top:5px;display:flex;align-items:center;justify-content:space-between;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-2)}
-.deal-bar{margin-top:5px;height:3px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.deal-n{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deal-v{margin-top:6px;font-family:var(--font-mono);font-size:11px;color:var(--ink-2)}
+.deal-bar{position:absolute;left:10px;right:10px;bottom:9px;height:3px;border-radius:2px;background:var(--surface-2);overflow:hidden}
 .deal-bar i{display:block;height:100%;width:0;background:var(--teal)}
 .won{position:absolute;right:-6px;top:-8px;width:22px;height:22px;border-radius:50%;background:var(--teal-deep);color:#fff;display:grid;place-items:center;box-shadow:var(--sh-1);opacity:0}
 .won svg{width:13px;height:13px}
 
-/* ---- usage panels ---- */
-.u-card{position:absolute;left:0;right:0;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2)}
-.u-chart{top:0;height:210px}
-.u-feed{top:222px;height:188px;overflow:hidden}
-.u-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
-.u-k{font-size:12px;color:var(--ink-2)}
-.u-n{font-family:var(--font-mono);font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+/* ---- usage: what the Usage app really shows ---- */
+.u-pulse{left:0;right:0;top:0;height:150px}
+.pulse{position:absolute;left:16px;right:16px;top:56px;height:62px;display:flex;align-items:flex-end;gap:4px}
+.pb{flex:1;border-radius:3px 3px 0 0;background:var(--teal-200);position:relative;height:6%}
+.pb i{position:absolute;left:0;right:0;bottom:0;height:45%;border-radius:3px 3px 0 0;background:var(--teal-deep)}
+.axis{position:absolute;left:16px;right:16px;bottom:10px;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)}
 .live{display:inline-flex;align-items:center;gap:7px;height:24px;padding:0 10px;border-radius:999px;background:var(--teal-50);border:1px solid var(--teal-200);color:var(--teal-deep);font-size:12px;font-weight:600}
 .live i{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(7,142,147,.5);animation:pulse 1.8s infinite}
 @keyframes pulse{70%{box-shadow:0 0 0 7px rgba(7,142,147,0)}100%{box-shadow:0 0 0 0 rgba(7,142,147,0)}}
-.u-svg{position:absolute;left:0;bottom:0;width:100%;height:170px}
-.feed{list-style:none;padding:8px 12px;display:grid;gap:6px;position:relative}
-.ev{display:flex;align-items:center;gap:10px;height:38px;padding:0 10px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--canvas);font-size:12.5px}
-.ev-i{width:24px;height:24px;border-radius:var(--r-xs);background:var(--teal-50);border:1px solid var(--teal-200);color:var(--teal-deep);display:grid;place-items:center;flex:none}
-.ev-i svg{width:14px;height:14px}
-.ev-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ev-t b{font-weight:600}
-.ev-w{font-family:var(--font-mono);font-size:11px;color:var(--ink-3)}
+.u-far{left:0;top:162px;width:318px;height:218px}
+.u-top{right:0;top:162px;width:270px;height:218px}
+.lad{list-style:none;padding:0 16px;margin-top:12px;display:grid;gap:8px}
+.lad li{display:grid;grid-template-columns:132px 1fr 28px;align-items:center;gap:10px;font-size:12px;color:var(--ink)}
+.lad .tr{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+.lad .tr i{display:block;height:100%;width:100%;transform-origin:left;transform:scaleX(0);border-radius:5px;background:var(--teal)}
+.lad li:nth-child(n+4) .tr i{background:var(--teal-deep)}
+.lad .nn{font-family:var(--font-mono);font-size:11.5px;text-align:right;color:var(--ink-2)}
+.acc{list-style:none;padding:0 16px;margin-top:12px;display:grid;gap:11px}
+.acc li{display:grid;grid-template-columns:62px 1fr 26px;align-items:center;gap:9px;font-size:12px;font-weight:600}
+.heat{display:grid;grid-template-columns:repeat(14,1fr);gap:2px}
+.heat i{height:14px;border-radius:2px;background:var(--surface-2)}
+.heat i[data-l="1"]{background:var(--teal-200)}.heat i[data-l="2"]{background:var(--teal-300)}.heat i[data-l="3"]{background:var(--teal)}.heat i[data-l="4"]{background:var(--teal-deep)}
+.acc .dd{font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--ink-2);text-align:right}
 
-/* ---- the two choices ---- */
-.go{display:grid;grid-template-columns:60px 1fr 44px;align-items:center;gap:18px;width:min(100%,560px);margin:0 auto;padding:22px 24px;text-decoration:none;color:var(--ink);
-  background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1);transition:border-color .2s,box-shadow .2s,transform .2s}
-.go-i{width:60px;height:60px;border-radius:var(--r-md);display:grid;place-items:center;background:var(--teal-50);border:1px solid var(--teal-200);color:var(--teal-deep)}
-.go-i svg{width:30px;height:30px}
+/* ---- the two choices: solid, so they read as the buttons ---- */
+.go{display:grid;grid-template-columns:56px 1fr 44px;align-items:center;gap:18px;width:100%;padding:22px 24px;text-decoration:none;color:#fff;
+  background:linear-gradient(135deg,var(--teal-deep),#04787C);border:1px solid var(--teal-deep-press);border-radius:var(--r-lg);box-shadow:var(--sh-3);transition:transform .2s,box-shadow .2s,background .2s}
+.go-i{width:56px;height:56px;border-radius:var(--r-md);display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff}
+.go-i svg{width:28px;height:28px}
 .go h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.015em}
-.go p{margin-top:3px;font-size:15px;line-height:22px;color:var(--ink-2)}
-.go-a{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--teal-deep);color:#fff;transition:background .2s,transform .2s}
+.go p{margin-top:3px;font-size:15px;line-height:22px;color:rgba(255,255,255,.84)}
+.go-a{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--teal-deep);transition:transform .2s}
 .go-a svg{width:20px;height:20px}
-.go:hover,.go:focus-visible{border-color:var(--teal);box-shadow:var(--sh-2);transform:translateY(-3px);outline:none}
-.go:focus-visible{box-shadow:0 0 0 3px rgba(7,142,147,.35),var(--sh-2)}
-.go:hover .go-a,.go:focus-visible .go-a{background:var(--teal-deep-press);transform:translateX(3px)}
+.go:hover,.go:focus-visible{transform:translateY(-3px);box-shadow:0 14px 30px rgba(3,95,98,.30),0 28px 60px rgba(3,95,98,.22);outline:none}
+.go:focus-visible{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--teal),var(--sh-3)}
+.go:hover .go-a,.go:focus-visible .go-a{transform:translateX(4px)}
 .rise{opacity:0}
 @media (max-width:900px){
   .halves{grid-template-columns:1fr;grid-template-rows:1fr 1fr}.halves::before{display:none}
-  .vis,.eyebrow{display:none}.half{justify-content:center}.half--pipe::after{display:none}
+  .vis,.eyebrow{display:none}.half-in{width:100%}.half--pipe::after{display:none}
   .go{grid-template-columns:52px 1fr 40px;padding:18px}.go-i{width:52px;height:52px}.go h2{font-size:19px}.go p{font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){.rise{opacity:1}.live i{animation:none}}
@@ -115,11 +124,11 @@ body[data-hover="use"] .half--pipe{opacity:.5}
 </svg>
 <span>Lunartree</span></div></header>
   <div class="halves">
-    <section class="half half--pipe" data-side="pipe">
+    <section class="half half--pipe" data-side="pipe"><div class="half-in">
       <span class="eyebrow rise">Where every deal stands</span>
       <div class="vis rise"><div class="stage" id="pipeStage" aria-hidden="true">
-        <div class="board">
-          <div class="bd-head"><span class="bd-title">Buying thesis pipeline</span><span class="pill">Closed <b id="closed">3</b></span></div>
+        <div class="card-s board">
+          <div class="hd"><span class="ttl">Buying thesis pipeline</span><span class="pill">Closed <b id="closed">3</b></span></div>
           <div class="cols" id="cols"></div>
           <div class="deals" id="deals"></div>
         </div>
@@ -129,24 +138,30 @@ body[data-hover="use"] .half--pipe{opacity:.5}
         <span><h2>Lunartree Pipeline</h2><p>Buying theses, actions and the mapped universe</p></span>
         <span class="go-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-    </section>
-    <section class="half half--use" data-side="use">
-      <span class="eyebrow rise">How the product is used</span>
+    </div></section>
+    <section class="half half--use" data-side="use"><div class="half-in">
+      <span class="eyebrow rise">How BioLens is used</span>
       <div class="vis rise"><div class="stage" id="useStage" aria-hidden="true">
-        <div class="u-card u-chart">
-          <div class="u-head"><div><div class="u-k">Weekly active users</div><div class="u-n" id="wau">0</div></div><span class="live"><i></i>Live</span></div>
-          <svg class="u-svg" id="chart" viewBox="0 0 580 170" preserveAspectRatio="none"><defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A9EBEE" stop-opacity=".85"/><stop offset="1" stop-color="#A9EBEE" stop-opacity="0"/></linearGradient></defs>
-            <path id="area" fill="url(#ga)" d=""/><path id="line" fill="none" stroke="#078E93" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d=""/></svg>
-          <svg class="u-svg" style="pointer-events:none" viewBox="0 0 580 170" preserveAspectRatio="none"><circle id="dot" r="5.5" fill="#fff" stroke="#035F62" stroke-width="2.4" cx="0" cy="0" opacity="0"/></svg>
+        <div class="card-s u-pulse">
+          <div class="hd"><span class="ttl">Daily pulse</span><span class="live"><i></i><span id="liveN">3</span> live now</span></div>
+          <div class="pulse" id="pulse"></div>
+          <div class="axis"><span>30 days ago</span><span id="peak">peak 412 a day</span><span>today</span></div>
         </div>
-        <div class="u-card u-feed"><ul class="feed" id="feed"></ul></div>
+        <div class="card-s u-far">
+          <div class="hd"><span class="ttl">How far users get</span><span class="sub">last 30 days</span></div>
+          <ul class="lad" id="lad"></ul>
+        </div>
+        <div class="card-s u-top">
+          <div class="hd"><span class="ttl">Most active accounts</span></div>
+          <ol class="acc" id="top"></ol>
+        </div>
       </div></div>
       <a class="go rise" href="https://lt-usage.vercel.app" data-side="use">
         <span class="go-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2.5-6.5 4 13 2.5-6.5H21"/></svg></span>
-        <span><h2>Lunartree Usage</h2><p>Who is using BioLens, and how much</p></span>
+        <span><h2>Lunartree Usage</h2><p>Who is using BioLens, and how far they get</p></span>
         <span class="go-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-    </section>
+    </div></section>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -154,27 +169,20 @@ body[data-hover="use"] .half--pipe{opacity:.5}
 (function () {
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || !window.gsap;
   var $ = function (id) { return document.getElementById(id); };
-
-  // scale each fixed-size visual to fit the room it is given
   function fit() {
-    [['pipeStage'], ['useStage']].forEach(function (a) {
-      var st = $(a[0]), box = st.parentNode;
-      st.style.setProperty('--s', Math.max(.4, Math.min(box.clientWidth / 600, box.clientHeight / 410, 1.2)));
-    });
+    ['pipeStage', 'useStage'].forEach(function (id) { var st = $(id); st.style.setProperty('--s', Math.max(.4, st.parentNode.clientWidth / 600)); });
   }
   fit(); window.addEventListener('resize', fit);
-
-  // calm the other side while one choice is hovered
   document.querySelectorAll('.go').forEach(function (a) {
     var on = function () { document.body.dataset.hover = a.dataset.side; }, off = function () { delete document.body.dataset.hover; };
     a.addEventListener('mouseenter', on); a.addEventListener('focus', on); a.addEventListener('mouseleave', off); a.addEventListener('blur', off);
   });
 
-  /* ---------- pipeline: deals advancing stage by stage until they close ---------- */
+  /* ---------- pipeline: deals advance stage by stage until they close ---------- */
   var STAGES = ['Find buyer', 'First call', 'Demo', 'Pilot', 'Contract'];
   var NAMES = ['Helix Bio', 'Orbis', 'Nova', 'Cellara', 'Vireo Tx', 'Meridian', 'Axion Bio', 'Lumen', 'Kestrel', 'Ardent', 'Solene', 'Quanta'];
-  var VALUES = ['$12K', '$15K', '$25K', '$18K', '$30K', '$9K'];
-  var COLW = 104, GAP = 8, TOP = 32, SLOTH = 60, SLOTS = 6;
+  var VALUES = ['$12K', '$15K', '$25K', '$18K', '$30K', '$9K'], PCT = [10, 25, 45, 70, 100];
+  var COLW = 104, GAP = 8, TOP = 36, SLOTH = 68, SLOTS = 4;
   var colsEl = $('cols'), dealsEl = $('deals'), countEls = [];
   STAGES.forEach(function (n) {
     var c = document.createElement('div'); c.className = 'col';
@@ -182,123 +190,100 @@ body[data-hover="use"] .half--pipe{opacity:.5}
     colsEl.appendChild(c); countEls.push(c.querySelector('b'));
   });
   var grid = STAGES.map(function () { return []; }), nameAt = 0, closed = 3;
-  function pos(c, s) { return { x: c * (COLW + GAP), y: TOP + s * SLOTH }; }
   function counts() { grid.forEach(function (col, i) { countEls[i].textContent = col.length; }); }
   function makeDeal(c) {
     var n = NAMES[nameAt++ % NAMES.length], el = document.createElement('div');
     el.className = 'deal';
     el.innerHTML = '<div class="deal-r"><span class="deal-i">' + n[0] + '</span><span class="deal-n">' + n + '</span></div>' +
-      '<div class="deal-v"><span>' + VALUES[nameAt % VALUES.length] + '</span><span>' + [10, 25, 45, 70, 100][c] + '%</span></div>' +
-      '<div class="deal-bar"><i></i></div>' +
+      '<div class="deal-v">' + VALUES[nameAt % VALUES.length] + '</div><div class="deal-bar"><i></i></div>' +
       '<span class="won"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>';
     dealsEl.appendChild(el);
-    var d = { el: el, bar: el.querySelector('i'), pct: el.querySelector('.deal-v span:last-child') };
-    return d;
+    return { el: el, bar: el.querySelector('i') };
   }
   function place(d, c, s, animate) {
-    var p = pos(c, s), pcts = [10, 25, 45, 70, 100];
+    var x = c * (COLW + GAP), y = TOP + s * SLOTH;
     d.col = c; d.slot = s;
-    if (!animate) gsap.set(d.el, { x: p.x, y: p.y }); else gsap.to(d.el, { x: p.x, y: p.y, duration: .9, ease: 'power3.inOut' });
-    d.pct.textContent = pcts[c] + '%';
-    if (animate) gsap.to(d.bar, { width: pcts[c] + '%', duration: .9, ease: 'power3.inOut' }); else gsap.set(d.bar, { width: pcts[c] + '%' });
+    if (animate) { gsap.to(d.el, { x: x, y: y, duration: .9, ease: 'power3.inOut' }); gsap.to(d.bar, { width: PCT[c] + '%', duration: .9, ease: 'power3.inOut' }); }
+    else { gsap.set(d.el, { x: x, y: y }); gsap.set(d.bar, { width: PCT[c] + '%' }); }
   }
   function put(c, animateIn) {
-    var s = 0; while (grid[c][s]) s++;
-    if (s >= SLOTS - 1 && grid[c].filter(Boolean).length >= SLOTS - 1) return null;
-    var d = makeDeal(c); grid[c][s] = d;
-    place(d, c, s, false);
+    if (grid[c].length >= SLOTS - 1) return;
+    var d = makeDeal(c); grid[c].push(d); place(d, c, grid[c].length - 1, false);
     if (animateIn && !still) gsap.fromTo(d.el, { opacity: 0, scale: .85 }, { opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.6)' });
-    return d;
   }
-  [[0, 3], [1, 2], [2, 2], [3, 1], [4, 1]].forEach(function (p) { for (var i = 0; i < p[1]; i++) put(p[0], false); });
-  // compact each column's slots
-  function tidy() { grid.forEach(function (col, c) { var live = col.filter(Boolean); grid[c] = live; live.forEach(function (d, s) { if (d.slot !== s || d.col !== c) place(d, c, s, true); }); }); counts(); }
+  [[0, 3], [1, 2], [2, 2], [3, 2], [4, 1]].forEach(function (p) { for (var i = 0; i < p[1]; i++) put(p[0], false); });
+  function tidy() { grid.forEach(function (col, c) { col.forEach(function (d, s) { if (d.slot !== s || d.col !== c) place(d, c, s, true); }); }); counts(); }
   counts();
-
   function step() {
-    // deals in Contract are won: pop a tick, lift away, count it
     grid[4].forEach(function (d) {
-      var w = d.el.querySelector('.won');
       gsap.timeline({ onComplete: function () { d.el.remove(); } })
-        .to(w, { opacity: 1, scale: 1.25, duration: .25, ease: 'back.out(3)' })
+        .to(d.el.querySelector('.won'), { opacity: 1, scale: 1.2, duration: .25, ease: 'back.out(3)' })
         .to(d.el, { y: '-=14', opacity: 0, duration: .7, ease: 'power2.in' }, '+=.35');
       closed++; $('closed').textContent = closed;
     });
     grid[4] = [];
-    for (var c = 3; c >= 0; c--) {
-      grid[c].slice().forEach(function (d, i) {
-        if (Math.random() < .22) return; // not every deal moves each week
-        var t = grid[c + 1];
-        if (t.length >= SLOTS - 1) return;
-        grid[c].splice(grid[c].indexOf(d), 1);
-        t.push(d);
-      });
-    }
+    for (var c = 3; c >= 0; c--) grid[c].slice().forEach(function (d) {
+      if (Math.random() < .25 || grid[c + 1].length >= SLOTS - 1) return;
+      grid[c].splice(grid[c].indexOf(d), 1); grid[c + 1].push(d);
+    });
     tidy();
-    for (var k = 0; k < 2; k++) if (Math.random() < .8) put(0, true);
+    for (var k = 0; k < 2; k++) if (Math.random() < .75) put(0, true);
     tidy();
   }
-  if (!still) (function loop() { gsap.delayedCall(2.4, function () { step(); loop(); }); })();
+  if (!still) (function loop() { gsap.delayedCall(2.6, function () { step(); loop(); }); })();
 
-  /* ---------- usage: users rising, with activity landing as it happens ---------- */
-  var W = 580, H = 170, PAD = 18;
-  var base = [.18, .26, .22, .34, .41, .38, .5, .58, .54, .66, .74, .71, .84, .92];
-  var pts = base.map(function (v, i) { return [i / (base.length - 1) * W, H - PAD - v * (H - PAD * 2)]; });
-  function smooth(p) { var d = 'M' + p[0][0] + ',' + p[0][1]; for (var i = 1; i < p.length; i++) { var a = p[i - 1], b = p[i], mx = (a[0] + b[0]) / 2; d += ' C' + mx + ',' + a[1] + ' ' + mx + ',' + b[1] + ' ' + b[0] + ',' + b[1]; } return d; }
-  var lineD = smooth(pts);
-  var line = $('line'), area = $('area'), dot = $('dot'), wau = $('wau');
-  line.setAttribute('d', lineD);
-  area.setAttribute('d', lineD + ' L' + W + ',' + H + ' L0,' + H + ' Z');
-  var len = line.getTotalLength();
-  var state = { p: still ? 1 : 0 };
-  function paint() {
-    var p = state.p;
-    line.style.strokeDasharray = len; line.style.strokeDashoffset = len * (1 - p);
-    area.style.clipPath = 'inset(0 ' + (100 - p * 100) + '% 0 0)';
-    var pt = line.getPointAtLength(len * p);
-    dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y); dot.setAttribute('opacity', p > 0 && p < 1 ? 1 : p === 1 ? 1 : 0);
-    wau.textContent = Math.round(p * 143);
+  /* ---------- usage: the same three views the Usage app opens with ---------- */
+  // daily pulse: a bar a day, the darker part is actions taken
+  var N = 30, bars = [], vals = [];
+  for (var i = 0; i < N; i++) {
+    var b = document.createElement('div'); b.className = 'pb'; b.innerHTML = '<i></i>'; $('pulse').appendChild(b); bars.push(b);
+    vals.push(Math.max(.12, Math.min(1, .35 + .45 * Math.sin(i / 3.1) * Math.sin(i / 7) + .18 * (i / N) + (Math.random() - .5) * .22)));
   }
-  paint();
-  if (!still) (function draw() {
-    state.p = 0;
-    gsap.to(state, { p: 1, duration: 4.5, ease: 'power2.inOut', onUpdate: paint, onComplete: function () { gsap.delayedCall(4.5, draw); } });
-  })();
-
-  var ICON = {
-    mail: '<path d="M4 6.5h16v11H4zM4.5 7l7.5 6 7.5-6"/>',
-    find: '<circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/>',
-    spark: '<path d="M12 4v4M12 16v4M4 12h4M16 12h4M7 7l2.2 2.2M14.8 14.8 17 17M17 7l-2.2 2.2M9.2 14.8 7 17"/>',
-    people: '<circle cx="9" cy="9" r="3"/><path d="M3.5 19c.4-3 2.6-4.5 5.5-4.5s5.1 1.5 5.5 4.5M16 6.5a3 3 0 0 1 0 5.6M18 14.8c1.7.6 2.7 2 3 4.2"/>'
-  };
-  var EVENTS = [
-    ['mail', '<b>Ana</b> wrote an email to a decision maker', 'now'],
-    ['people', '<b>Dev</b> enriched 14 people at Helix Bio', '1m'],
-    ['find', '<b>Priya</b> searched CDMOs in Boston', '2m'],
-    ['spark', '<b>Marc</b> used the copilot on Orbis', '3m'],
-    ['mail', '<b>Lea</b> sent a digest to 6 accounts', '4m'],
-    ['people', '<b>Sam</b> enriched 9 people at Nova Labs', '5m'],
-    ['find', '<b>Ira</b> filtered the map to reagent suppliers', '6m'],
-    ['spark', '<b>Tej</b> asked the copilot for a call brief', '7m']
-  ];
-  var feed = $('feed'), ei = 0;
-  function addEvent(animate) {
-    var e = EVENTS[ei++ % EVENTS.length], li = document.createElement('li');
-    li.className = 'ev';
-    li.innerHTML = '<span class="ev-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICON[e[0]] + '</svg></span><span class="ev-t">' + e[1] + '</span><span class="ev-w">' + (animate ? 'now' : e[2]) + '</span>';
-    feed.insertBefore(li, feed.firstChild);
-    var rows = feed.children;
-    if (animate) {
-      gsap.from(li, { height: 0, opacity: 0, marginBottom: -6, duration: .55, ease: 'power3.out' });
-      for (var i = 1; i < rows.length; i++) { var w = rows[i].querySelector('.ev-w'), n = parseInt(w.textContent, 10); w.textContent = (isNaN(n) ? 1 : n + 1) + 'm'; }
-    }
-    while (rows.length > 4) feed.removeChild(rows[rows.length - 1]);
+  function paintBars(animate) {
+    bars.forEach(function (b, i) {
+      var h = Math.round(vals[i] * 100) + '%', a = Math.round(35 + 40 * vals[i]) + '%';
+      if (animate) { gsap.to(b, { height: h, duration: .8, ease: 'power2.out', delay: i * .018 }); gsap.to(b.firstChild, { height: a, duration: .8, delay: i * .018 }); }
+      else { b.style.height = h; b.firstChild.style.height = a; }
+    });
+    $('peak').textContent = 'peak ' + Math.round(Math.max.apply(null, vals) * 412) + ' a day';
   }
-  for (var i = 3; i >= 0; i--) { ei = i; addEvent(false); }
-  ei = 4;
-  if (!still) (function tick() { gsap.delayedCall(2.2, function () { addEvent(true); tick(); }); })();
+  paintBars(!still);
+  if (!still) (function drift() { gsap.delayedCall(2.4, function () {
+    for (var k = 0; k < 6; k++) { var j = Math.floor(Math.random() * N); vals[j] = Math.max(.12, Math.min(1, vals[j] + (Math.random() - .5) * .4)); }
+    paintBars(true); $('liveN').textContent = 2 + Math.floor(Math.random() * 4); drift(); }); })();
 
-  // entrance
+  // how far users get: the real six-rung ladder
+  var RUNGS = [['Opened BioLens', 100], ['Looked at a company', 82], ['Dug into the intel', 57], ['Worked a lead', 38], ['Got a contact', 21], ['Sent outreach', 9]];
+  var USERS = 46, lad = $('lad'), fills = [], nums = [];
+  RUNGS.forEach(function (r) {
+    var li = document.createElement('li');
+    li.innerHTML = '<span>' + r[0] + '</span><span class="tr"><i></i></span><span class="nn mono">0</span>';
+    lad.appendChild(li); fills.push(li.querySelector('i')); nums.push(li.querySelector('.nn'));
+  });
+  function ladder(animate) {
+    RUNGS.forEach(function (r, i) {
+      var n = Math.round(USERS * r[1] / 100), o = { v: animate ? 0 : n };
+      if (!animate) { fills[i].style.transform = 'scaleX(' + r[1] / 100 + ')'; nums[i].textContent = n; return; }
+      gsap.fromTo(fills[i], { scaleX: 0 }, { scaleX: r[1] / 100, duration: 1, ease: 'power3.out', delay: i * .12 });
+      gsap.to(o, { v: n, duration: 1, delay: i * .12, ease: 'power3.out', onUpdate: function () { nums[i].textContent = Math.round(o.v); } });
+    });
+  }
+  ladder(!still);
+  if (!still) (function again() { gsap.delayedCall(7, function () { ladder(true); again(); }); })();
+
+  // most active accounts: days active, then the daily strip
+  var ACC = [['Helix Bio', 12], ['Orbis', 10], ['Nova', 9], ['Cellara', 7], ['Vireo Tx', 5]], cells = [];
+  ACC.forEach(function (a) {
+    var li = document.createElement('li'), row = [], h = '';
+    for (var i = 0; i < 14; i++) { var on = Math.random() < a[1] / 14; row.push(on ? 1 + Math.floor(Math.random() * 4) : 0); h += '<i data-l="' + row[i] + '"></i>'; }
+    li.innerHTML = '<span>' + a[0] + '</span><span class="heat">' + h + '</span><span class="dd">' + a[1] + 'd</span>';
+    $('top').appendChild(li); cells.push(li.querySelectorAll('i'));
+  });
+  if (!still) (function pop() { gsap.delayedCall(1.2, function () {
+    var row = cells[Math.floor(Math.random() * cells.length)], c = row[Math.floor(Math.random() * 14)];
+    c.dataset.l = 1 + Math.floor(Math.random() * 4);
+    gsap.fromTo(c, { scale: .3 }, { scale: 1, duration: .5, ease: 'back.out(3)' }); pop(); }); })();
+
   if (!still) gsap.fromTo('.rise', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .1 });
   else document.querySelectorAll('.rise').forEach(function (e) { e.style.opacity = 1; });
 })();
